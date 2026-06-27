@@ -53,6 +53,7 @@ export function readTransactions() {
   });
 }
 
+// Serializes concurrent appends; the CSV file is not safe for parallel writes.
 let writeLock: Promise<unknown> = Promise.resolve();
 
 export function appendTransaction(transaction: Transaction) {

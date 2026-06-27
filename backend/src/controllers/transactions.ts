@@ -3,22 +3,14 @@ import { getAllTransactions, createTransaction } from '../services/transactions.
 import type { NewTransaction } from '../types.js';
 
 export async function getTransactions(_req: Request, res: Response) {
-  try {
-    const transactions = await getAllTransactions();
-    res.json(transactions);
-  } catch {
-    res.status(500).json({ error: 'Failed to read transactions' });
-  }
+  const transactions = await getAllTransactions();
+  res.json(transactions);
 }
 
 export async function postTransaction(
   req: Request<Record<string, never>, unknown, NewTransaction>,
   res: Response,
 ) {
-  try {
-    const created = await createTransaction(req.body);
-    res.status(201).json(created);
-  } catch {
-    res.status(500).json({ error: 'Failed to save transaction' });
-  }
+  const created = await createTransaction(req.body);
+  res.status(201).json(created);
 }
