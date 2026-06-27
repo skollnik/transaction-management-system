@@ -1,14 +1,12 @@
+import type { newTransactionSchema } from './validators/transactions.js';
+import type { z } from 'zod';
+
 export const TRANSACTION_STATUSES = ['Pending', 'Settled', 'Failed'] as const;
 
 export type TransactionStatus = (typeof TRANSACTION_STATUSES)[number];
 
-export type Transaction = {
-  transactionDate: string;
-  accountNumber: string;
-  accountHolderName: string;
-  amount: number;
-  status: TransactionStatus;
-}
+export type NewTransaction = z.infer<typeof newTransactionSchema>;
 
-// Status is omitted on purpose — the server assigns it.
-export type NewTransaction = Omit<Transaction, 'status'>;
+export type Transaction = NewTransaction & {
+  status: TransactionStatus;
+};
