@@ -23,11 +23,16 @@ import {
 } from '@/validators/transaction'
 
 const fields = [
-  { name: 'transactionDate', label: 'Transaction Date', type: 'date' },
-  { name: 'accountNumber', label: 'Account Number', type: 'text' },
-  { name: 'accountHolderName', label: 'Account Holder Name', type: 'text' },
-  { name: 'amount', label: 'Amount', type: 'number' },
+  { name: 'transactionDate', label: 'Transaction Date', type: 'date', placeholder: '' },
+  { name: 'accountNumber', label: 'Account Number', type: 'text', placeholder: '1234-5678-9012' },
+  { name: 'accountHolderName', label: 'Account Holder Name', type: 'text', placeholder: 'Jane Doe' },
+  { name: 'amount', label: 'Amount', type: 'number', placeholder: '0.00' },
 ] as const
+
+function formatAccountNumber(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 12)
+  return digits.replace(/(\d{4})(?=\d)/g, '$1-')
+}
 
 export function AddTransactionModal() {
   const [open, setOpen] = useState(false)
@@ -37,6 +42,7 @@ export function AddTransactionModal() {
     handleSubmit,
     reset,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<TransactionFormInput, unknown, TransactionFormValues>({
     resolver: zodResolver(transactionFormSchema),
@@ -77,14 +83,19 @@ export function AddTransactionModal() {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
-          {fields.map(({ name, label, type }) => (
+          {fields.map(({ name, label, type, placeholder }) => (
             <div key={name} className="space-y-1.5">
               <Label htmlFor={name}>{label}</Label>
               <Input
                 id={name}
                 type={type}
                 step={type === 'number' ? '0.01' : undefined}
+                placeholder={placeholder || undefined}
                 {...register(name)}
+                {...(name === 'accountNumber' && {
+                  onChange: (e) =>
+                    setValue('accountNumber', formatAccountNumber(e.target.value)),
+                })}
               />
               {errors[name] && (
                 <p className="text-sm text-red-600">{errors[name]?.message}</p>

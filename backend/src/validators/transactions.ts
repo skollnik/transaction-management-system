@@ -10,7 +10,10 @@ export const newTransactionSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Transaction Date must be in YYYY-MM-DD format')
     .refine(isRealDate, { message: 'Transaction Date must be a real calendar date' }),
-  accountNumber: z.string().trim().min(1, 'Account Number is required'),
+  accountNumber: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{4}-\d{4}$/, 'Account Number must look like 1234-5678-9012'),
   accountHolderName: z.string().trim().min(1, 'Account Holder Name is required'),
   amount: z.coerce
     .number()
