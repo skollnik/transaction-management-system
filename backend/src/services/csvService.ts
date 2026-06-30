@@ -7,7 +7,10 @@ import type { Transaction } from '../types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const CSV_FILE_PATH = path.resolve(__dirname, '../../data/transactions.csv');
+// Overridable so tests can point at a temporary file.
+const CSV_FILE_PATH = process.env.CSV_FILE_PATH
+  ? path.resolve(process.env.CSV_FILE_PATH)
+  : path.resolve(__dirname, '../../data/transactions.csv');
 
 const CSV_HEADER = [
   { id: 'transactionDate', title: 'Transaction Date' },

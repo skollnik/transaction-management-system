@@ -41,7 +41,9 @@ a CSV file.
 .
 ├── backend/                  # Express API (TypeScript)
 │   ├── src/
-│   │   ├── app.ts            # entry point: middleware + routes
+│   │   ├── server.ts         # entry point: starts the HTTP server
+│   │   ├── app.ts            # Express app: middleware + routes
+│   │   ├── app.test.ts       # API integration tests
 │   │   ├── routes/           # URL -> controller wiring
 │   │   ├── controllers/      # HTTP layer (request/response)
 │   │   ├── services/         # business logic + CSV data access
@@ -280,6 +282,25 @@ for unexpected failures — all returned as `{ "error": "..." }`.
 ---
 
 ## Testing
+
+### Automated tests (backend)
+
+The backend has an integration test suite (Vitest + Supertest) covering the API
+endpoints. The tests run against a temporary CSV file, so your sample data is
+never touched.
+
+```bash
+cd backend
+npm test
+```
+
+This verifies that:
+
+- `GET /transactions` returns the stored transactions.
+- `POST /transactions` creates a record and assigns a valid random status.
+- A created transaction is persisted and returned by a subsequent `GET`.
+- Invalid input is rejected with `400` and per-field error details.
+- Unknown routes return `404`.
 
 ### Manual testing through the UI
 
